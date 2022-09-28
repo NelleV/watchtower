@@ -1,5 +1,6 @@
 import os
 from os.path import join
+import json
 
 import pandas as pd
 import numpy as np
@@ -121,6 +122,9 @@ def update_detailed_pulls(user, project, auth=None, data_home=None,
     if pulls is None:
         return None
 
+    # If "detailed_pulls" == "null" replace value with NA
+    pulls.loc[pulls["detailed_pulls"] == "null", "detailed_pulls"] = None
+
     for i, pull in pulls.iterrows():
         if i < since:
             continue
@@ -128,19 +132,18 @@ def update_detailed_pulls(user, project, auth=None, data_home=None,
             or redownload):
 
             if verbose:
-                print("Downloading detailed data from PR %d" % i)
+                print("Downloading detailed data from PR %d" % pull["id"])
 
             detailed_pull_url = pull["_links"]["self"]["href"]
             raw = _github_api.get_detailed_page(
                 auth, detailed_pull_url)
-            pulls.at[i, "detailed_pulls"] = raw
+            pulls.at[i, "detailed_pulls"] = json.dumps(raw)
 
             current_download += 1
             if current_download == max_download:
                 break
 
     filename = os.path.join(path, user, project, "pulls.json")
-
     _save(filename, pulls)
     return load_pulls(user, project, data_home=data_home)
 
