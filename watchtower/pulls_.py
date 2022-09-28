@@ -132,7 +132,7 @@ def update_detailed_pulls(user, project, auth=None, data_home=None,
             or redownload):
 
             if verbose:
-                print("Downloading detailed data from PR %d" % pull["id"])
+                print("Downloading detailed data from PR %d" % pull["number"])
 
             detailed_pull_url = pull["_links"]["self"]["href"]
             raw = _github_api.get_detailed_page(
