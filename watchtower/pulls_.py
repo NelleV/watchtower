@@ -180,6 +180,6 @@ def load_pulls(user, project, data_home=None,
         pulls = pd.read_json(filepath)
         if len(pulls) == 0:
             return None
-    except ValueError:
+    except FileNotFoundError:
         return None
     return pulls

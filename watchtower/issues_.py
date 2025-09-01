@@ -106,7 +106,7 @@ def load_issues(user, project, data_home=None,
         issues = pd.read_json(filepath)
         if len(issues) == 0:
             return None
-    except ValueError:
+    except FileNotFoundError:
         return None
     return issues
 
